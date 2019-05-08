@@ -1,6 +1,9 @@
 package ru.itis.services;
 
-import ru.itis.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.itis.transfer.EventDto;
+import ru.itis.transfer.UserDto;
 import ru.itis.models.Event;
 import ru.itis.models.User;
 import ru.itis.repositories.EventRepository;
@@ -10,10 +13,12 @@ import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class EventServiceImpl implements EventService {
     private UserRepository userRepository;
     private EventRepository eventRepository;
 
+    @Autowired
     public EventServiceImpl(UserRepository userRepository, EventRepository eventRepository){
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
@@ -42,6 +47,14 @@ public class EventServiceImpl implements EventService {
             }
         }
        return cookieValue;
+    }
+
+    @Override
+    public Optional<EventDto> getEventById(Long id) {
+        Optional<Event> event = eventRepository.find(id);
+        if (event.isPresent()) {
+            return Optional.ofNullable(EventDto.from(event.get()));
+        } else return Optional.empty();
     }
 
     @Override

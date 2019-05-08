@@ -1,14 +1,17 @@
 package ru.itis.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.itis.models.*;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class CommentRepositoryImpl implements CommentRepository {
     private JdbcTemplate jdbcTemplate;
 
@@ -30,6 +33,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     //language=SQL
     private static final String SQL_FIND_ALL = "SELECT * from user_comment";
 
+    @Autowired
     public CommentRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

@@ -1,14 +1,17 @@
 package ru.itis.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.itis.models.*;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class SubscriptionRepositoryImpl implements SubscriptionRepository {
     private JdbcTemplate jdbcTemplate;
 
@@ -36,6 +39,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
             "name = ?, subscriber_id = ?, user_id = ? " +
             "WHERE id = ?";
 
+    @Autowired
     public SubscriptionRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

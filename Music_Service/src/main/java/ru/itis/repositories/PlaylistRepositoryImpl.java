@@ -1,13 +1,16 @@
 package ru.itis.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.itis.models.*;
 
 import javax.sql.DataSource;
 import java.util.*;
 
+@Component
 public class PlaylistRepositoryImpl implements PlaylistRepository{
     private JdbcTemplate jdbcTemplate;
 
@@ -44,7 +47,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository{
     private static final String SQL_DELETE_TRACK ="DELETE from playlist_track WHERE playlist_id = ? and track_id = ?";
 
     //language=SQL
-    private static final String SQL_FIND_ALL_BY_SEARCH = "select * from playlist where name like ? and playlist.user_entity_id = ?";
+    private static final String SQL_FIND_ALL_BY_SEARCH = "select * from playlist where lower(name) like lower('%' || ? || '%') and playlist.user_entity_id = ?";
 
     //language=SQL
     private static final String SQL_SELECT_PLAYLIST_WITH_TRACKS_BY_TRACKCOUNT =
@@ -55,6 +58,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository{
                     "where playlist.track_count = ? " +
                     "order by playlist.id;";
 
+    @Autowired
     public PlaylistRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -79,7 +83,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository{
 
     @Override
     public void save(Playlist model) {
-        jdbcTemplate.update(SQL_INSERT, model.getName(), model.getReleaseDate(), model.getDuration(), model.getTrackCount(), model.getUser().getId());
+        jdbcTemplate.update(SQL_INSERT, model.getName(), model.getReleaseDate(), model.getDuration(), model.getTrackCount(), model.getCreator().getId());
     }
 
     @Override

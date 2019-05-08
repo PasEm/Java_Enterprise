@@ -1,13 +1,16 @@
 package ru.itis.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.itis.models.*;
 
 import javax.sql.DataSource;
 import java.util.*;
 
+@Component
 public class UserRepositoryImpl implements UserRepository {
     private JdbcTemplate jdbcTemplate;
 
@@ -61,8 +64,9 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String SQL_DELETE_PARTICIPANT_BASKET = "delete from participant_basket where id = ?";
 
     //language=SQL
-    private static final String SQL_FIND_ALL_BY_SEARCH = "select * from user_entity where login like ?";
+    private static final String SQL_FIND_ALL_BY_SEARCH = "select * from user_entity where lower(login) like lower('%' || ? || '%')";
 
+    @Autowired
     public UserRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

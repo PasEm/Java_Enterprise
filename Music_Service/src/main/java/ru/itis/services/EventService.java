@@ -1,8 +1,8 @@
 package ru.itis.services;
 
-import ru.itis.dto.UserDto;
+import ru.itis.transfer.EventDto;
+import ru.itis.transfer.UserDto;
 import ru.itis.models.Event;
-import ru.itis.models.User;
 
 import javax.servlet.http.Cookie;
 import java.util.List;
@@ -14,6 +14,8 @@ public interface EventService {
     void clearParticipantBasket(String cookieValue);
 
     String getBasketId(Cookie[] cookies);
+
+    Optional<EventDto> getEventById(Long id);
 
     List<UserDto> getAllParticipants();
     List<UserDto> searchParticipants(String title);

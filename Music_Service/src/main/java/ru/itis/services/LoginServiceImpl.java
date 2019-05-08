@@ -1,6 +1,9 @@
 package ru.itis.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.itis.forms.LoginForm;
 import ru.itis.models.User;
 import ru.itis.repositories.UserRepository;
@@ -8,10 +11,12 @@ import ru.itis.repositories.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class LoginServiceImpl implements LoginService {
     private UserRepository userRepository;
     private PasswordEncoder encoder;
 
+    @Autowired
     public LoginServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.encoder = passwordEncoder;

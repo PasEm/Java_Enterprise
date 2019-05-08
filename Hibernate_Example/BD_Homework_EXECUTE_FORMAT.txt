@@ -1,0 +1,35 @@
+create or replace function averageTemperature(year integer) returns numeric as $$
+declare
+  table_name text := 'weather_' || year;
+  result numeric;
+begin
+  execute format('select avg(temperature) from %I', table_name) into result;
+  return result;
+end
+$$ language plpgsql;
+
+select  averageTemperature(1988);
+
+drop function averageTemperature(year integer);
+------
+--Exercise 3
+
+create or replace function averageTemperature(year1 integer, year2 integer) returns numeric as $$
+declare
+  table_name text;
+  current_result numeric;
+  result numeric := 0;
+begin
+  for i in year1..year2 loop
+    table_name := 'weather_' || i;
+    execute format('select avg(temperature) from %I', table_name) into current_result;
+    result := result + current_result;
+  end loop;
+
+  return (result / (year2 - year1 + 1)::numeric);
+end
+$$ language plpgsql;
+
+select  averageTemperature(1983, 1984);
+
+drop function averageTemperature(year1 integer, year2 integer);

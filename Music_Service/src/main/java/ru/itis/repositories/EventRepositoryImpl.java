@@ -1,9 +1,11 @@
 package ru.itis.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import ru.itis.dto.UserDto;
+import org.springframework.stereotype.Component;
+import ru.itis.transfer.UserDto;
 import ru.itis.models.*;
 
 import javax.sql.DataSource;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class EventRepositoryImpl implements EventRepository {
     private JdbcTemplate jdbcTemplate;
 
@@ -44,6 +47,7 @@ public class EventRepositoryImpl implements EventRepository {
     //language=SQL
     private static final String SQL_SELECT_EVENT_WITH_AUTHORS_BY_ID = null;
 
+    @Autowired
     public EventRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

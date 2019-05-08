@@ -1,8 +1,12 @@
 package ru.itis.services;
 
-import ru.itis.dto.PlaylistDto;
-import ru.itis.dto.PlaylistTrackDto;
-import ru.itis.dto.TrackDto;
+import  org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import ru.itis.transfer.ExtendedPlaylistDto;
+import ru.itis.transfer.PlaylistDto;
+import ru.itis.transfer.PlaylistTrackDto;
+import ru.itis.transfer.TrackDto;
 import ru.itis.models.Playlist;
 import ru.itis.models.Track;
 import ru.itis.models.User;
@@ -13,12 +17,14 @@ import ru.itis.repositories.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TrackCollectionServiceImpl implements TrackCollectionService {
     private TrackRepository trackRepository;
     private PlaylistRepository playlistRepository;
     private UserRepository userRepository;
 
-    public TrackCollectionServiceImpl(TrackRepository trackRepository, PlaylistRepository playlistRepository, UserRepository userRepository){
+    @Autowired
+    public TrackCollectionServiceImpl(TrackRepository trackRepository, @Qualifier("playlistRepositoryHibernateImpl") PlaylistRepository playlistRepository, UserRepository userRepository){
         this.playlistRepository = playlistRepository;
         this.trackRepository = trackRepository;
         this.userRepository = userRepository;
@@ -28,7 +34,7 @@ public class TrackCollectionServiceImpl implements TrackCollectionService {
     public void createPlaylist(String name, User user) {
         Playlist playlist = Playlist.builder()
                 .name(name)
-                .user(user)
+                .creator(user)
                 .build();
         playlistRepository.save(playlist);
     }
@@ -48,6 +54,14 @@ public class TrackCollectionServiceImpl implements TrackCollectionService {
     @Override
     public void deletePlaylist(String name, User user) {
         playlistRepository.deleteByName(user, name);
+    }
+
+    @Override
+    public Optional<ExtendedPlaylistDto> getPlaylistById(Long playlistId) {
+        Optional<Playlist> playlist = playlistRepository.find(playlistId);
+        if (playlist.isPresent()) {
+            return Optional.ofNullable(ExtendedPlaylistDto.from(playlist.get()));
+        } else return Optional.empty();
     }
 
     @Override

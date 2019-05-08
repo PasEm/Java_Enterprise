@@ -1,14 +1,17 @@
 package ru.itis.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.itis.models.*;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TrackRepositoryImpl implements TrackRepository {
     private JdbcTemplate jdbcTemplate;
 
@@ -61,6 +64,7 @@ public class TrackRepositoryImpl implements TrackRepository {
     private static final String SQL_FIND_BY_PLAYLIST = "select * from track " +
             "where id = (select track_id from playlist_track where playlist_id = ? and track_id = ?)";
 
+    @Autowired
     public TrackRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

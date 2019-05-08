@@ -8,5 +8,6 @@ public interface LoginService {
     Optional<String> login(String login, String password);
 
     boolean isExistsByCookie(String cookie);
+
     void signOut(User user);
 }

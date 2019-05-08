@@ -1,6 +1,6 @@
 package ru.itis.repositories;
 
-import ru.itis.dto.UserDto;
+import ru.itis.transfer.UserDto;
 import ru.itis.models.Event;
 import ru.itis.models.User;
 

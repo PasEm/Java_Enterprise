@@ -17,6 +17,4 @@ public interface UserRepository extends CrudRepository<User> {
 
     Optional<User> findByLogin(String login);
     Optional<User> findByCookie(String cookieValue);
-
-
 }

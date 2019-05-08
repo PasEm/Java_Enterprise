@@ -1,0 +1,22 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="ru.itis.models.Car" table="car">
+        <id name="id" type="java.lang.Long" column="id">
+            <generator class="identity"/>
+        </id>
+
+        <property name="model" column="model"/>
+        <property name="number" column="number"/>
+
+        <one-to-one name="driver" class="ru.itis.models.Driver"
+                    fetch="select" constrained="true">
+        </one-to-one>
+
+    </class>
+
+</hibernate-mapping>

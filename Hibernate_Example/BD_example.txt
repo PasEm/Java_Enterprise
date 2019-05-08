@@ -1,0 +1,30 @@
+BD:
+--------------
+	Course:
+------------
+id pk (number = integer)
+count_students integer not null
+------------
+	Lesson:
+------------
+id pk
+course_id fk Course.id
+time_begin timestamp
+date timestamp
+------------
+	Visit:
+------------
+id pk
+lesson_id fk Lesson.id
+student_id fk Student.id
+visit boolean Default false
+date timestamp
+------------
+	Student:
+------------
+id pk
+surname varchar(20)
+first_name varchar(20)
+third_name varchar(20)
+course_id fk Course.id
+------------

@@ -1,8 +1,9 @@
 package ru.itis.services;
 
-import ru.itis.dto.PlaylistDto;
-import ru.itis.dto.PlaylistTrackDto;
-import ru.itis.dto.TrackDto;
+import ru.itis.transfer.ExtendedPlaylistDto;
+import ru.itis.transfer.PlaylistDto;
+import ru.itis.transfer.PlaylistTrackDto;
+import ru.itis.transfer.TrackDto;
 import ru.itis.models.Playlist;
 import ru.itis.models.Track;
 import ru.itis.models.User;
@@ -15,6 +16,8 @@ public interface TrackCollectionService {
     void addTrack(Playlist playlist, Track track);
     void deleteTrack(Playlist playlist, Track track);
     void deletePlaylist(String name, User user);
+
+    Optional<ExtendedPlaylistDto> getPlaylistById(Long playlistId);
 
     Optional<Playlist> getPlaylistByUserAndName(User user, String name);
 
