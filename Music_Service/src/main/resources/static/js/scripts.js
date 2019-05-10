@@ -7,7 +7,9 @@ function searchParticipants(query) {
             participants: query
         }
     }).done(function (data) {
+        $("#participants_table").html("");
         if (data) {
+            $("#participants_table").html("");
             let contentTable = document.createElement("div");
             contentTable.className = "dropdown-menu show";
             contentTable.style = "width: 90%; margin-left: 5%; margin-top: 3%;";
@@ -24,8 +26,6 @@ function searchParticipants(query) {
                 contentTable.append(element);
             }
             $("#participants_table").append(contentTable);
-        } else {
-            $("#participants_table").html("");
         }
     });
 }
@@ -160,6 +160,7 @@ function addParticipant() {
             currentParticipant : document.getElementById("inputSearch").value
         }
     }).done(function (data) {
+        $("#tableEvent").html("");
         let contentTableHTML = "<table class='table table-hover'><thead class='thead-light'>";
         contentTableHTML +=
             "<tr>" +
@@ -191,16 +192,13 @@ function loadTracks() {
         for (let i = 0; i < data.length;) {
             contentTableHTML += "<div class='row'>";
             for (let j = 0; j < 4, i < data.length; j++, i++) {
-                contentTableHTML += "<div class='col mb-3'><div class='card lg-2 md-3' id='" + data[i].id +"'>";
-                contentTableHTML += "<img class='card-img-top' style='width: 250px; height: 120px;' src='#' alt='" + data[i].name+ "'>";
-                contentTableHTML += "<div class='card-body'>";
+                contentTableHTML += "<div class='col mb-3'><div style='width: 330px' class='card lg-2 md-3' id='" + data[i].id +"'>";
+                contentTableHTML += "<img class='card-img-top' style='height: 120px;' src='" + data[i].avatar + "' alt='" + data[i].name+ "'>";
+                contentTableHTML += "<div class='card-body' style='height: 90px'>";
                 contentTableHTML += "<h5 class='card-title'>" + data[i].author.login + "</h5>";
                 contentTableHTML += "<p class='card-text'>" + data[i].name + "</p>";
-                contentTableHTML += "</div><div class='card-footer'>";1
-                contentTableHTML +=  "<small class='text-muted'>Last updated ";
-                contentTableHTML +=  data[i].releaseDate.dayOfMonth + ".";
-                contentTableHTML +=  data[i].releaseDate.monthValue + ".";
-                contentTableHTML +=  data[i].releaseDate.year + "</small>";
+                contentTableHTML += "</div><div class='card-footer'>";
+                contentTableHTML +=  "<small class='text-muted'>Last updated " + data[i].releaseDate + "</small>";
                 contentTableHTML += "</div></div></div>";
             }
             contentTableHTML += "</div></div>";
@@ -338,3 +336,44 @@ function playPlaylist() {
         }
     });
 }
+//------------------------------------------------------
+function addComment(event) {
+    $.ajax({
+        type: 'post',
+        url: '/event/' + event + '/comment',
+        data: {
+            comment: document.getElementById("formControl").value
+        }
+    }).done(function (data) {
+        if (data) {
+            $("#comments").html("");
+            for (let i = 0; i < data.length; i++) {
+                let comment = document.createElement("li");
+                comment.className = "media p-3";
+
+                let image = document.createElement("img");
+                image.className = "mr-3";
+                image.style = "height: 64px; width: 64px;";
+                image.src = data[i].user.avatar;
+                image.alt = data[i].user.login;
+
+                let block = document.createElement("div");
+                block.className = "media-body";
+
+                let description = document.createElement("h5");
+                description.className = "mt-0 mb-1";
+                description.innerText = data[i].user.login;
+
+                block.append(description);
+
+                block.append(data[i].description);
+
+                comment.append(image);
+                comment.append(block);
+
+                $("#comments").append(comment);
+            }
+        }
+    });
+}
+//--------------------------------------------------

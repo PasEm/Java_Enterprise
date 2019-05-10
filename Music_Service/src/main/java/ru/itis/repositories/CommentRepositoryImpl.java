@@ -16,12 +16,16 @@ public class CommentRepositoryImpl implements CommentRepository {
     private JdbcTemplate jdbcTemplate;
 
     //language=SQL
-    private static final String SQL_INSERT = "INSERT INTO user_comment(title, description, date, user_id, type, track_id, event_id)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?);";
+    private static final String SQL_INSERT = "INSERT INTO user_comment(title, description, date, user_id, track_id, event_id)" +
+            "VALUES (?, ?, ?, ?, ?, ?);";
+
+    //language=SQL
+    private static final String SQL_INSERT_WITH_EVENT = "INSERT INTO user_comment(description, date, user_id, event_id)" +
+            "VALUES (?, ?, ?, ?);";
 
     //language=SQL
     private static final  String SQL_UPDATE = "UPDATE user_comment SET " +
-            "title = ?, description = ?, date = ?, user_id = ?, type = ?, track_id = ?, event_id = ?" +
+            "title = ?, description = ?, date = ?, user_id = ?, track_id = ?, event_id = ?" +
             " WHERE id = ?";
 
     //language=SQL
@@ -33,6 +37,11 @@ public class CommentRepositoryImpl implements CommentRepository {
     //language=SQL
     private static final String SQL_FIND_ALL = "SELECT * from user_comment";
 
+    //language=SQL
+    private static final String SQL_FIND_ALL_BY_EVENT = "select *, login, avatar " +
+            "from user_comment join user_entity " +
+            "on event_id = ? and user_entity.id in (select user_id from user_comment where event_id = ?)";
+
     @Autowired
     public CommentRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -42,13 +51,14 @@ public class CommentRepositoryImpl implements CommentRepository {
     {
         User user = User.builder()
                 .id(resultSet.getLong("user_id"))
+                .login(resultSet.getString("login"))
+                .avatar(resultSet.getString("avatar"))
                 .build();
 
         return Comment.builder()
                 .description(resultSet.getString("description"))
                 .title(resultSet.getString("title"))
                 .date(resultSet.getTimestamp("date").toLocalDateTime())
-                .type(resultSet.getInt("type"))
                 .user(user)
                 .build();
     };
@@ -59,8 +69,12 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findAllByEvent(Event event) {
-        return null;
+    public List<Comment> findAllByEvent(Long eventId) {
+        try {
+            return jdbcTemplate.query(SQL_FIND_ALL_BY_EVENT, commentRowMapper, eventId, eventId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
@@ -69,9 +83,15 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
+    public void saveByEvent(Comment model) {
+        jdbcTemplate.update(SQL_INSERT_WITH_EVENT,model.getDescription(),
+                model.getDate(), model.getUser().getId(), model.getEvent().getId());
+    }
+
+    @Override
     public Optional<Comment> find(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, commentRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, commentRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -80,7 +100,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void save(Comment model) {
         jdbcTemplate.update(SQL_INSERT, model.getTitle(), model.getDescription(),
-                model.getDate(), model.getUser().getId(), model.getType(),
+                model.getDate(), model.getUser().getId(),
                 model.getTrack().getId(), model.getEvent().getId());
     }
 
@@ -92,7 +112,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void update(Comment model) {
         jdbcTemplate.update(SQL_UPDATE, model.getTitle(), model.getDescription(),
-                model.getDate(), model.getUser().getId(), model.getType(),
+                model.getDate(), model.getUser().getId(),
                 model.getTrack().getId(), model.getEvent().getId(), model.getId());
     }
 

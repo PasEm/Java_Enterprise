@@ -3,10 +3,7 @@ package ru.itis.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ru.itis.forms.ProfileForm;
 import ru.itis.models.User;
 import ru.itis.services.LoginService;
@@ -28,8 +25,9 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/profile")
-    public String getUserProfile(HttpServletRequest request) {
-        Optional<User> user = userService.getCurrentUserByCookieValue(request.getCookies());
+    public String getUserProfile(HttpServletRequest request,
+                                 @CookieValue(name = "auth") String auth) {
+        Optional<User> user = userService.getCurrentUserByCookieValue(auth);
         user.ifPresent(user1 -> request.setAttribute("user", user1));
 
         return "/profile";
@@ -38,16 +36,18 @@ public class UserController {
     @GetMapping("/user/{id}")
     @ResponseBody
     public ResponseEntity<ExtendedUserDto> getUser(@PathVariable(name = "id") Long id,
+                                                   @CookieValue(name = "auth", required = false) String auth,
                                                    HttpServletRequest request) {
-        Optional<User> user = userService.getCurrentUserByCookieValue(request.getCookies());
+        Optional<User> user = userService.getCurrentUserByCookieValue(auth);
         user.ifPresent(user1 -> request.setAttribute("user", user1));
 
         return ResponseEntity.of(userService.getUserById(id));
     }
 
     @PostMapping("/profile")
-    public String updateUser(HttpServletRequest request) {
-        User user = userService.getCurrentUserByCookieValue(request.getCookies()).get();
+    public String updateUser(HttpServletRequest request,
+                             @CookieValue(name = "auth") String auth) {
+        User user = userService.getCurrentUserByCookieValue(auth).get();
 
         String email = request.getParameter("email");
         String surname = request.getParameter("surname");

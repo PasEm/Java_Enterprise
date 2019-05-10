@@ -14,7 +14,7 @@ public interface UserService {
 
     String isEqualPassword(String newPassword, String lastPassword, String userPassword);
 
-    Optional<User> getCurrentUserByCookieValue(Cookie[] cookies);
+    Optional<User> getCurrentUserByCookieValue(String auth);
 
     Optional<ExtendedUserDto> getUserById(Long id);
 }

@@ -29,7 +29,7 @@ public class TrackRepositoryImpl implements TrackRepository {
 
     //language=SQL
     private static final String SQL_FIND_ALL = "SELECT user_entity.id as user_id, user_entity.login as user_login, " +
-            "track.id, track.name, track.genre, track.duration, track.url, track.release_date " +
+            "track.id, track.name, track.genre, track.duration, track.url, track.release_date, track.avatar " +
             "FROM track " +
             "join user_entity on user_entity.id = track.author_id";
 
@@ -76,6 +76,7 @@ public class TrackRepositoryImpl implements TrackRepository {
                     .genre(resultSet.getString("genre"))
                     .duration(resultSet.getLong("duration"))
                     .releaseDate(resultSet.getDate("release_date").toLocalDate())
+                    .avatar(resultSet.getString("avatar"))
                     .build();
 
     private RowMapper<Track> trackWithUserRowMapper = ((resultSet, i) ->
@@ -91,6 +92,7 @@ public class TrackRepositoryImpl implements TrackRepository {
                 .genre(resultSet.getString("genre"))
                 .duration(resultSet.getLong("duration"))
                 .author(author)
+                .avatar(resultSet.getString("avatar"))
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
                 .build();
     });

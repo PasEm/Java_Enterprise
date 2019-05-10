@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@ToString(exclude = {"creator", "track", "event"})
+@ToString(exclude = {"user", "track", "event"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +21,6 @@ public class Comment {
     private String description;
 
     private LocalDateTime date;
-
-    private Integer type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")

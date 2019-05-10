@@ -63,18 +63,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getCurrentUserByCookieValue(Cookie[] cookies) {
-        String cookieValue = null;
-        if (cookies == null) {
+    public Optional<User> getCurrentUserByCookieValue(String auth) {
+        if (auth == null) {
             return Optional.empty();
         }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("auth")) {
-                cookieValue = cookie.getValue();
-                break;
-            }
-        }
-        return userRepository.findByCookie(cookieValue);
+        return userRepository.findByCookie(auth);
     }
 
     @Override

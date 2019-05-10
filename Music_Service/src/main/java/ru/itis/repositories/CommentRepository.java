@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface CommentRepository extends CrudRepository<Comment> {
     List<Comment> findAllByTrack (Track track);
-    List<Comment> findAllByEvent(Event event);
+    List<Comment> findAllByEvent(Long eventId);
     List<Comment> findAllByUser (User user);
+
+    void saveByEvent(Comment model);
 }

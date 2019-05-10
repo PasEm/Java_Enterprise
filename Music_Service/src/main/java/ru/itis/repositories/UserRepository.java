@@ -10,6 +10,7 @@ public interface UserRepository extends CrudRepository<User> {
     List<User> findAllParticipant();
     List<User> getParticipantsList(String cookieValue);
     List<User> findAllBySearch(String title);
+    List<User> findAllByEventId(Long eventId);
 
     void addParticipant(String coolieValue, User model);
     void deleteParticipants(String cookieValue, User model);

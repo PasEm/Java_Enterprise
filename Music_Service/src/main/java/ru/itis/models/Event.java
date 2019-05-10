@@ -21,6 +21,7 @@ public class Event {
     private String address;
     private String city;
     private String country;
+    private String avatar;
 
     @Column(name = "sale_site")
     private String saleSite;

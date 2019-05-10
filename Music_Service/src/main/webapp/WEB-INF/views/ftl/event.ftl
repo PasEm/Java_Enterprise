@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/resources/css/menu.css">
 <head>
-    <title>playlists</title>
+    <title>event</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -30,11 +30,51 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
                 <h1 class="h2">${event.name}</h1>
             </div>
-            <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
+            <div class="jumbotron p-3 p-md-5 text-white rounded bg-secondary">
                 <div class="col-md-6 px-0">
                     <h1 class="display-4 font-italic">${event.name}</h1>
                     <p class="lead my-3">${event.city}, ${event.country}</p>
+                    <p class="lead my-3">${event.date}</p>
                     <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">${event.saleSite}</a></p>
+                </div>
+            </div>
+            <#if event.participants ??>
+                <ul class="list-unstyled">
+                    <h3>${locale["event.participants"]}:</h3>
+                    <#list event.participants as participant>
+                        <li class="media p-3">
+                            <img class="mr-3" style="height: 64px; width: 64px;"
+                                 src="${participant.avatar}" alt='${participant.login}'>
+                            <div class="media-body">
+                                <h5 class="mt-2 mb-1">${participant.login}</h5>
+                            </div>
+                        </li>
+                    </#list>
+                </ul>
+            </#if>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <h3 class="h2 text-align-center">${locale["comment.comments"]}</h3>
+            </div>
+            <#if event.comments ??>
+                <ul class="list-unstyled" id="comments">
+                    <#list event.comments as comment>
+                        <li class="media p-3">
+                            <img class="mr-3" style="height: 64px; width: 64px;" src="${comment.user.avatar}"
+                                    alt='${comment.user.login}'>
+                            <div class="media-body">
+                                <h5 class="mt-1 mb-1">${comment.user.login}</h5>
+                                ${comment.description}
+                            </div>
+                        </li>
+                    </#list>
+                </ul>
+            </#if>
+            <div class="form-group">
+                <textarea class="form-control" id="formControl" rows="2" placeholder='${locale["comment.writing"]}'></textarea>
+            </div>
+                <div class="input-group-append mb-3">
+                    <button class="btn btn-outline-secondary btn-block"
+                            type="button" id="button-addon2" onclick="addComment('1105')">${locale["comment.send"]}</button>
                 </div>
             </div>
         </main>

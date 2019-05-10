@@ -8,6 +8,7 @@ import ru.itis.models.Track;
 import ru.itis.models.User;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,17 +17,22 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class TrackDto {
+    private Long id;
     private String name;
     private String url;
-    private LocalDate releaseDate;
+    private String releaseDate;
     private UserDto author;
+    private String avatar;
 
     public static TrackDto from(Track track) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return TrackDto.builder()
+                .id(track.getId())
                 .name(track.getName())
                 .url(track.getUrl())
-                .releaseDate(track.getReleaseDate())
+                .releaseDate(track.getReleaseDate().format(format))
                 .author(UserDto.from(track.getAuthor()))
+                .avatar(track.getAvatar())
                 .build();
     }
 

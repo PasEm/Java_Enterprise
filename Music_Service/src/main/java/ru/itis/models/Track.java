@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@ToString(exclude = "creator")
+@ToString(exclude = {"author", "playlists", "comments"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +22,7 @@ public class Track {
     private String name;
     private String genre;
     private String url;
+    private String avatar;
 
     //private Integer viewCount;
 

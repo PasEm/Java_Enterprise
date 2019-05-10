@@ -3,7 +3,6 @@ package ru.itis.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.transfer.ExtendedPlaylistDto;
 import ru.itis.transfer.PlaylistDto;
@@ -33,25 +32,28 @@ public class PlaylistController {
     @GetMapping("/playlist/{id}")
     @ResponseBody
     public ResponseEntity<ExtendedPlaylistDto> getPlaylist(HttpServletRequest request,
+                                                           @CookieValue(name = "auth") String auth,
                                                            @PathVariable(name = "id") Long id) {
-        Optional<User> user = userService.getCurrentUserByCookieValue(request.getCookies());
+        Optional<User> user = userService.getCurrentUserByCookieValue(auth);
         user.ifPresent(user1 -> request.setAttribute("user", user1));
 
         return ResponseEntity.of(collectionService.getPlaylistById(id));
     }
 
     @GetMapping("/playlists")
-    public String getPlaylistPage(HttpServletRequest request) {
-        User user = userService.getCurrentUserByCookieValue(request.getCookies()).orElse(null);
+    public String getPlaylistPage(HttpServletRequest request,
+                                  @CookieValue(name = "auth") String auth) {
+        User user = userService.getCurrentUserByCookieValue(auth).orElse(null);
         request.setAttribute("user", user);
         return "/playlists";
     }
 
     @GetMapping("/playlists/search")
     @ResponseBody
-    public ResponseEntity<List<PlaylistDto>> getPlaylistPage(ModelMap modelMap, HttpServletRequest request,
+    public ResponseEntity<List<PlaylistDto>> getPlaylistPage(HttpServletRequest request,
+                                                             @CookieValue(name = "auth") String auth,
                                                              @RequestParam(value = "searchPlaylist") String searchTitle) {
-        Optional<User> user = userService.getCurrentUserByCookieValue(request.getCookies());
+        Optional<User> user = userService.getCurrentUserByCookieValue(auth);
         List<PlaylistDto> playlists = searchTitle.equals("") ?
                 collectionService.getPlaylists(user.orElse(null))
                 : collectionService.searchPlaylists(searchTitle, user.orElse(null));
@@ -62,10 +64,9 @@ public class PlaylistController {
 
     @PostMapping("/playlists")
     @ResponseBody
-    public ResponseEntity<List<PlaylistTrackDto>> findPlaylist(
-            HttpServletRequest request,
-            @RequestParam(value = "currentPlaylistName") String playlistName) {
-        User user = userService.getCurrentUserByCookieValue(request.getCookies()).orElse(null);
+    public ResponseEntity<List<PlaylistTrackDto>> findPlaylist(@CookieValue(name = "auth") String auth,
+                                                               @RequestParam(value = "currentPlaylistName") String playlistName) {
+        User user = userService.getCurrentUserByCookieValue(auth).orElse(null);
 
         Playlist searchPlaylist = collectionService.getPlaylistByUserAndName(user, playlistName).orElse(null);
 
@@ -75,8 +76,9 @@ public class PlaylistController {
     }
 
     @PostMapping("/playlist")
-    public ResponseEntity<Object> createPlaylist(@RequestParam(value = "name") String name, HttpServletRequest request) {
-        Optional<User> user = userService.getCurrentUserByCookieValue(request.getCookies());
+    public ResponseEntity<Object> createPlaylist(@RequestParam(value = "name") String name,
+                                                 @CookieValue(name = "auth") String auth) {
+        Optional<User> user = userService.getCurrentUserByCookieValue(auth);
         collectionService.createPlaylist(name, user.get());
         return ResponseEntity.ok().build();
     }

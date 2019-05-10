@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itis.models.Event;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,16 +19,17 @@ public class EventDto {
     private String name;
     private String city;
     private String country;
-    private LocalDateTime date;
+    private String date;
     private String saleSite;
 
     public static EventDto from(Event event) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy, hh:mm");
         return EventDto.builder()
                 .id(event.getId())
                 .name(event.getName())
                 .city(event.getCity())
                 .country(event.getCountry())
-                .date(event.getDate())
+                .date(event.getDate().format(format))
                 .saleSite(event.getSaleSite())
                 .build();
     }

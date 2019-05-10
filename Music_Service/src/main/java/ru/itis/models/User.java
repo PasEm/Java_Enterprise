@@ -25,6 +25,7 @@ public class User {
     private String firstName;
     private String country;
     private String login;
+    private String avatar;
 
     @Column(name = "hash_password")
     private String hashPassword;

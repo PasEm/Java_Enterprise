@@ -76,8 +76,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor()).addPathPatterns("/playlists**", "/playlist**", "/profile");
-        registry.addInterceptor(localizationInterceptor()).addPathPatterns("/*");
+        registry.addInterceptor(authInterceptor()).addPathPatterns("/playlists**", "/playlist**", "/profile", "/event/*/comment", "/signOut");
+        registry.addInterceptor(localizationInterceptor()).addPathPatterns("/**");
     }
 
     @Override

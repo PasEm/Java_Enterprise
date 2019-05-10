@@ -54,12 +54,14 @@ public class EventRepositoryImpl implements EventRepository {
 
     private RowMapper<Event> eventRowMapper = (resultSet, i) ->
             Event.builder()
-            .name(resultSet.getString("name"))
-            .address(resultSet.getString("address"))
-            .city(resultSet.getString("city"))
-            .country(resultSet.getString("country"))
-            .date(resultSet.getTimestamp("date").toLocalDateTime())
-            .saleSite(resultSet.getString("sale_site"))
+                    .id(resultSet.getLong("id"))
+                    .name(resultSet.getString("name"))
+                    .address(resultSet.getString("address"))
+                    .city(resultSet.getString("city"))
+                    .country(resultSet.getString("country"))
+                    .date(resultSet.getTimestamp("date").toLocalDateTime())
+                    .saleSite(resultSet.getString("sale_site"))
+                    .avatar(resultSet.getString("avatar"))
             .build();
 
     @Override
@@ -98,7 +100,7 @@ public class EventRepositoryImpl implements EventRepository {
     @Override
     public Optional<Event> find(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, eventRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, eventRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

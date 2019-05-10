@@ -50,6 +50,10 @@ public class UserRepositoryImpl implements UserRepository {
             "SELECT * FROM user_entity where id in (select participant_id from event_participant)";
 
     //language=SQL
+    private static final String SQL_FIND_ALL_PARTICIPANTS_BY_EVENT =
+            "SELECT id, login, avatar FROM user_entity where id in (select participant_id from event_participant where event_id = ?)";
+
+    //language=SQL
     private static final String SQL_FIND_PARTICIPANT_BASKET = "select * from user_entity where " +
             "id in (select participant_id from participant_basket where id = ?)";
 
@@ -84,10 +88,17 @@ public class UserRepositoryImpl implements UserRepository {
             .cookie(resultSet.getString("cookie"))
             .build();
 
+    private RowMapper<User> userForDto = (resultSet, i) ->
+            User.builder()
+            .id(resultSet.getLong("id"))
+            .login(resultSet.getString("login"))
+            .avatar(resultSet.getString("avatar"))
+            .build();
+
     @Override
     public Optional<User> find(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, userRowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, userRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -153,6 +164,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<User> findAllByEventId(Long eventId) {
+        try {
+            return jdbcTemplate.query(SQL_FIND_ALL_PARTICIPANTS_BY_EVENT, userForDto, eventId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
     public void addParticipant(String coolieValue, User model) {
         jdbcTemplate.update(SQL_ADD_PARTICIPANT, coolieValue, model.getId());
     }
@@ -170,7 +190,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByLogin(String login) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_LOGIN, userRowMapper, login));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_LOGIN, userRowMapper, login));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -179,7 +199,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByCookie(String cookieValue) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_COOKIE, userRowMapper, cookieValue));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_COOKIE, userRowMapper, cookieValue));
         }  catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

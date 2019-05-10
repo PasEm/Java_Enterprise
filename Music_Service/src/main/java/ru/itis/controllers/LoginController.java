@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,8 +56,8 @@ public class LoginController {
     }
 
     @GetMapping("/signOut")
-    public String signOut(HttpServletRequest request) {
-        Optional<User> user = userService.getCurrentUserByCookieValue(request.getCookies());
+    public String signOut(@CookieValue(name = "auth") String auth) {
+        Optional<User> user = userService.getCurrentUserByCookieValue(auth);
         user.ifPresent(user1 -> loginService.signOut(user1));
         return "/main";
     }

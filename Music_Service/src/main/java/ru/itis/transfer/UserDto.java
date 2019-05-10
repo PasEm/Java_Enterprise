@@ -15,12 +15,15 @@ import java.util.stream.Collectors;
 @Builder
 public class UserDto {
     private String login;
+    private String avatar;
+
     private Long id;
 
     public static UserDto from(User user) {
         return UserDto.builder()
                 .login(user.getLogin())
                 .id(user.getId())
+                .avatar(user.getAvatar())
                 .build();
     }
 
