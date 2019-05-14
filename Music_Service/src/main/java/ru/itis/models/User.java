@@ -29,6 +29,7 @@ public class User {
 
     @Column(name = "hash_password")
     private String hashPassword;
+
     private String cookie;
 
     private LocalDate birthdate;
